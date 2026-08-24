@@ -74,11 +74,14 @@ export const routes: Routes = [
       import('./layouts/client-layout/client-layout').then((module) => module.ClientLayout),
     children: [
       {
-        path: 'pedidos', title: 'Meus pedidos | Ícones Católicos', loadComponent: placeholder,
-        data: {
-          title: 'Meus pedidos',
-          description: 'Acompanhamento das encomendas, pagamentos e certificados.',
-        },
+        path: 'pedidos', title: 'Meus pedidos | Ícones Católicos',
+        loadComponent: () => import('./features/cliente/pages/pedidos-page/pedidos-page').then(
+          (module) => module.PedidosPage),
+      },
+      {
+        path: 'pedidos/:id', title: 'Detalhes do pedido | Ícones Católicos',
+        loadComponent: () => import('./features/cliente/pages/pedido-detalhe-page/pedido-detalhe-page').then(
+          (module) => module.PedidoDetalhePage),
       },
       { path: '', pathMatch: 'full', redirectTo: 'pedidos' },
     ],
