@@ -1,13 +1,18 @@
-<header>
-  <div class="container header-content">
-    <a class="brand" routerLink="/"><span>IC</span><strong>Ícones Católicos</strong></a>
-    <nav aria-label="Navegação principal">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Início</a>
-      <a routerLink="/catalogo" routerLinkActive="active">Catálogo</a>
-      <a routerLink="/login" routerLinkActive="active">Entrar</a>
-      <a class="account" routerLink="/cadastro">Criar conta</a>
-    </nav>
-  </div>
-</header>
+<header><div class="container header-content">
+  <a class="brand" routerLink="/" aria-label="Oficina de Ícones São José - início">
+    <img src="/images/logo-oficina-sao-jose.jpg" alt="Logo da Oficina de Ícones São José">
+    <span><strong>Oficina de Ícones</strong><small>São José</small></span>
+  </a>
+  <nav aria-label="Navegação principal">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Início</a>
+    <a routerLink="/catalogo" routerLinkActive="active">Catálogo</a>
+    <a routerLink="/login" routerLinkActive="active">Entrar</a>
+    <a class="account" routerLink="/cadastro">Criar conta</a>
+  </nav>
+</div></header>
 <main><router-outlet /></main>
-<footer><div class="container"><strong>Ícones Católicos Artesanais</strong><span>Arte em madeira, fé e tradição.</span></div></footer>
+<footer><div class="container footer-content">
+  <div class="footer-brand"><img src="/images/logo-oficina-sao-jose.jpg" alt="Oficina de Ícones São José"><div><strong>Oficina de Ícones São José</strong><span>Arte em madeira, fé e tradição.</span></div></div>
+  <nav aria-label="Links do rodapé"><a routerLink="/catalogo">Catálogo</a><a routerLink="/login">Meus pedidos</a></nav>
+  <small>Rio de Janeiro · Atendimento artesanal sob encomenda</small>
+</div></footer>
