@@ -1,0 +1,19 @@
+:host { display: block; min-height: 100dvh; }
+
+.loading-bar {
+  position: fixed; z-index: 1000; top: 0; left: 0; width: 40%; height: 3px;
+  background: var(--color-gold); animation: loading 1.2s ease-in-out infinite;
+}
+
+.error-notification {
+  position: fixed; z-index: 999; top: 1rem; right: 1rem; display: flex; gap: 1rem;
+  width: min(26rem, calc(100% - 2rem)); padding: 1rem; color: #5f1e1e;
+  background: #fff3f3; border: 1px solid #e8b5b5; border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+.error-notification p { margin: 0.25rem 0 0; }
+.error-notification button {
+  align-self: flex-start; padding: 0; color: inherit; font-size: 1.5rem;
+  background: none; border: 0; cursor: pointer;
+}
+@keyframes loading { from { transform: translateX(-100%); } to { transform: translateX(250%); } }

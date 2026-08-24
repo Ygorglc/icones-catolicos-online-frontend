@@ -1,0 +1,13 @@
+<header>
+  <div class="container header-content">
+    <a class="brand" routerLink="/"><span>IC</span><strong>Ícones Católicos</strong></a>
+    <nav aria-label="Navegação principal">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Início</a>
+      <a routerLink="/catalogo" routerLinkActive="active">Catálogo</a>
+      <a routerLink="/login" routerLinkActive="active">Entrar</a>
+      <a class="account" routerLink="/cadastro">Criar conta</a>
+    </nav>
+  </div>
+</header>
+<main><router-outlet /></main>
+<footer><div class="container"><strong>Ícones Católicos Artesanais</strong><span>Arte em madeira, fé e tradição.</span></div></footer>

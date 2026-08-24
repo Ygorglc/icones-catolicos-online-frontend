@@ -1,1 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-background: #f8f3eb; --color-surface: #fffaf4; --color-text: #31231e;
+  --color-text-muted: #74635b; --color-border: #e5d8ca; --color-wine: #762b32;
+  --color-gold: #c79c4a; --color-gold-dark: #8d6729; --font-heading: Georgia, 'Times New Roman', serif;
+  --font-body: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --radius-sm: .45rem; --radius-md: .8rem; --shadow-md: 0 1rem 2.5rem rgb(55 35 24 / 15%);
+  color: var(--color-text); font-family: var(--font-body); background: var(--color-background);
+  font-synthesis: none; text-rendering: optimizeLegibility;
+}
+* { box-sizing: border-box; } html { scroll-behavior: smooth; } body { min-width: 320px; min-height: 100dvh; margin: 0; } button, input, select, textarea { font: inherit; } img { max-width: 100%; display: block; }
+.container { width: min(1120px, calc(100% - 2rem)); margin-inline: auto; }
