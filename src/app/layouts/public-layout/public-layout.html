@@ -6,6 +6,7 @@
   <nav aria-label="Navegação principal">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Início</a>
     <a routerLink="/catalogo" routerLinkActive="active">Catálogo</a>
+    <a routerLink="/carrinho" routerLinkActive="active">Carrinho@if (carrinho.quantidade()) { <span class="cart-count">{{ carrinho.quantidade() }}</span> }</a>
     <a routerLink="/login" routerLinkActive="active">Entrar</a>
     <a class="account" routerLink="/cadastro">Criar conta</a>
   </nav>

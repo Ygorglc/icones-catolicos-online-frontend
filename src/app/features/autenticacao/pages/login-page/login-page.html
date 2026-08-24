@@ -1,0 +1,10 @@
+<section class="auth-page"><div class="auth-message"><span>Bem-vindo de volta</span><h1>Acompanhe sua encomenda artesanal</h1><p>Entre para consultar a produção, os pagamentos e o certificado digital da sua peça.</p><div class="brand-seal"><img src="/images/logo-oficina-sao-jose.jpg" alt="Oficina de Ícones São José"><small>Arte, fé e tradição</small></div></div>
+<div class="form-panel"><div class="form-card"><span class="eyebrow">Acesso seguro</span><h2>Entrar</h2><p>Informe os dados cadastrados na loja.</p>
+  @if (errorMessage()) { <div class="form-error" role="alert">{{ errorMessage() }}</div> }
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <label>E-mail<input type="email" formControlName="email" autocomplete="email" placeholder="voce@exemplo.com">@if (form.controls.email.touched && form.controls.email.invalid) { <small>Informe um e-mail válido.</small> }</label>
+    <label>Senha<input type="password" formControlName="senha" autocomplete="current-password" placeholder="Sua senha">@if (form.controls.senha.touched && form.controls.senha.invalid) { <small>Informe sua senha.</small> }</label>
+    <button type="submit" [disabled]="submitting()">{{ submitting() ? 'Entrando...' : 'Entrar na minha conta' }}</button>
+  </form>
+  <p class="alternative">Ainda não possui conta? <a routerLink="/cadastro">Cadastre-se</a></p>
+</div></div></section>

@@ -1,0 +1,14 @@
+<section class="auth-page register"><div class="auth-message"><span>Faça parte da oficina</span><h1>Crie sua conta para encomendar</h1><p>Salve seus dados, acompanhe a produção e tenha acesso ao certificado artesanal da peça.</p><ul><li>Acompanhamento dos pedidos</li><li>Histórico de pagamentos</li><li>Certificado digital de autenticidade</li></ul></div>
+<div class="form-panel"><div class="form-card wide"><span class="eyebrow">Cadastro de cliente</span><h2>Criar conta</h2><p>Seus dados serão usados somente no atendimento das encomendas.</p>
+  @if (errorMessage()) { <div class="form-error" role="alert">{{ errorMessage() }}</div> }
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate><div class="fields">
+    <label class="full">Nome completo<input formControlName="nome" autocomplete="name">@if (form.controls.nome.touched && form.controls.nome.invalid) { <small>Informe seu nome.</small> }</label>
+    <label class="full">E-mail<input type="email" formControlName="email" autocomplete="email">@if (form.controls.email.touched && form.controls.email.invalid) { <small>Informe um e-mail válido.</small> }</label>
+    <label>Senha<input type="password" formControlName="senha" autocomplete="new-password">@if (form.controls.senha.touched && form.controls.senha.invalid) { <small>Use entre 8 e 72 caracteres.</small> }</label>
+    <label>Confirmar senha<input type="password" formControlName="confirmarSenha" autocomplete="new-password">@if (passwordMismatch()) { <small>As senhas não coincidem.</small> }</label>
+    <label>Telefone <em>opcional</em><input formControlName="telefone" autocomplete="tel"></label>
+    <label>CPF <em>opcional</em><input formControlName="cpf" inputmode="numeric" maxlength="11" placeholder="Somente números">@if (form.controls.cpf.touched && form.controls.cpf.invalid) { <small>Informe os 11 dígitos.</small> }</label>
+    <label class="full">Endereço <em>opcional</em><textarea formControlName="endereco" rows="3" autocomplete="street-address"></textarea></label>
+  </div><button type="submit" [disabled]="submitting()">{{ submitting() ? 'Criando conta...' : 'Criar minha conta' }}</button></form>
+  <p class="alternative">Já possui cadastro? <a routerLink="/login">Entrar</a></p>
+</div></div></section>

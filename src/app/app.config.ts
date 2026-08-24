@@ -7,6 +7,7 @@ import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { apiErrorInterceptor } from './core/interceptors/api-error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 registerLocaleData(localePt);
 
@@ -16,6 +17,8 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     provideRouter(routes),
     provideClientHydration(),
-    provideHttpClient(withFetch(), withInterceptors([loadingInterceptor, apiErrorInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([
+      authInterceptor, loadingInterceptor, apiErrorInterceptor,
+    ])),
   ]
 };

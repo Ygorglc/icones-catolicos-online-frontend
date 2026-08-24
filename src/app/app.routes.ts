@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard, clientGuard } from './core/guards/role.guard';
 
 const placeholder = () =>
   import('./shared/components/page-placeholder/page-placeholder').then(
@@ -41,17 +42,34 @@ export const routes: Routes = [
         },
       },
       {
-        path: 'login', title: 'Entrar | Ícones Católicos', loadComponent: placeholder,
-        data: { title: 'Entrar', description: 'Acesso de clientes e administradores.' },
+        path: 'login', title: 'Entrar | Ícones Católicos',
+        loadComponent: () =>
+          import('./features/autenticacao/pages/login-page/login-page').then(
+            (module) => module.LoginPage,
+          ),
       },
       {
-        path: 'cadastro', title: 'Criar conta | Ícones Católicos', loadComponent: placeholder,
-        data: { title: 'Criar conta', description: 'Cadastro de novos clientes.' },
+        path: 'cadastro', title: 'Criar conta | Ícones Católicos',
+        loadComponent: () =>
+          import('./features/autenticacao/pages/cadastro-page/cadastro-page').then(
+            (module) => module.CadastroPage,
+          ),
+      },
+      {
+        path: 'carrinho', title: 'Carrinho | Ícones Católicos',
+        loadComponent: () => import('./features/carrinho/pages/carrinho-page/carrinho-page').then(
+          (module) => module.CarrinhoPage),
+      },
+      {
+        path: 'checkout', title: 'Checkout | Ícones Católicos', canActivate: [clientGuard],
+        loadComponent: () => import('./features/checkout/pages/checkout-page/checkout-page').then(
+          (module) => module.CheckoutPage),
       },
     ],
   },
   {
     path: 'cliente',
+    canActivate: [clientGuard],
     loadComponent: () =>
       import('./layouts/client-layout/client-layout').then((module) => module.ClientLayout),
     children: [
@@ -67,6 +85,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [adminGuard],
     loadComponent: () =>
       import('./layouts/admin-layout/admin-layout').then((module) => module.AdminLayout),
     children: [
