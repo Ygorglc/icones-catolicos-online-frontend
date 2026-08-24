@@ -93,12 +93,15 @@ export const routes: Routes = [
       import('./layouts/admin-layout/admin-layout').then((module) => module.AdminLayout),
     children: [
       {
-        path: '', title: 'Painel administrativo | Ícones Católicos', loadComponent: placeholder,
-        data: {
-          title: 'Painel administrativo',
-          description: 'Gestão de encomendas, estoque, pagamentos e resultados.',
-        },
+        path: '', title: 'Painel administrativo | Ícones Católicos',
+        loadComponent: () => import('./features/admin/pages/dashboard-page/dashboard-page').then((module) => module.DashboardPage),
       },
+      { path: 'encomendas', title: 'Encomendas | Administração', loadComponent: () => import('./features/admin/pages/encomendas-admin-page/encomendas-admin-page').then((module) => module.EncomendasAdminPage) },
+      { path: 'pagamentos', title: 'Pagamentos | Administração', loadComponent: () => import('./features/admin/pages/pagamentos-admin-page/pagamentos-admin-page').then((module) => module.PagamentosAdminPage) },
+      { path: 'estoque', title: 'Estoque | Administração', loadComponent: () => import('./features/admin/pages/estoque-admin-page/estoque-admin-page').then((module) => module.EstoqueAdminPage) },
+      { path: 'modelos', title: 'Modelos | Administração', loadComponent: () => import('./features/admin/pages/modelos-admin-page/modelos-admin-page').then((module) => module.ModelosAdminPage) },
+      { path: 'financeiro', title: 'Financeiro | Administração', loadComponent: () => import('./features/admin/pages/financeiro-admin-page/financeiro-admin-page').then((module) => module.FinanceiroAdminPage) },
+      { path: 'certificados', title: 'Certificados | Administração', loadComponent: () => import('./features/admin/pages/certificados-admin-page/certificados-admin-page').then((module) => module.CertificadosAdminPage) },
     ],
   },
   { path: '**', redirectTo: '' },
