@@ -1,0 +1,8 @@
+<section class="catalog-header"><div class="container"><span>Arte devocional em madeira</span><h1>Catálogo de ícones</h1><p>Conheça nossos modelos e encontre uma peça para acompanhar os momentos de fé da sua família.</p></div></section>
+<main class="container catalog-content">
+  <div class="toolbar"><div><strong>{{ filteredModels().length }}</strong><span> modelos disponíveis</span></div><label><span class="sr-only">Buscar modelo</span><input type="search" placeholder="Buscar por nome..." [ngModel]="search()" (ngModelChange)="search.set($event)"></label></div>
+  @if (loading()) { <div class="grid" aria-label="Carregando catálogo">@for (item of [1,2,3]; track item) { <div class="skeleton"></div> }</div> }
+  @else if (failed()) { <section class="state"><h2>Não foi possível carregar o catálogo</h2><p>Confira se o backend está em execução e tente novamente.</p><button type="button" (click)="loadModels()">Tentar novamente</button></section> }
+  @else if (filteredModels().length === 0) { <section class="state"><h2>Nenhum modelo encontrado</h2><p>Experimente buscar usando outro nome.</p></section> }
+  @else { <div class="grid">@for (modelo of filteredModels(); track modelo.id) { <app-modelo-card [modelo]="modelo" /> }</div> }
+</main>

@@ -1,0 +1,18 @@
+<main class="container detail-page">
+  <a class="back" routerLink="/catalogo">← Voltar ao catálogo</a>
+  @if (loading()) { <div class="loading">Preparando os detalhes do ícone...</div> }
+  @else if (failed() || !modelo()) { <section class="state"><h1>Ícone não encontrado</h1><p>O modelo pode estar indisponível ou o servidor não respondeu.</p><button type="button" (click)="load()">Tentar novamente</button></section> }
+  @else if (modelo(); as item) {
+    <section class="product"><div class="image"><img [src]="item.imagemUrl || '/images/logo-oficina-sao-jose.jpg'" [alt]="item.nome" (error)="useFallback($event)"></div><div class="summary"><span>Ícone artesanal em madeira</span><h1>{{ item.nome }}</h1><p>{{ item.descricao }}</p><div class="price"><small>A partir de</small><strong>{{ item.precoBase | currency:'BRL' }}</strong></div><ul><li>Produção artesanal sob encomenda</li><li>Personalização de tamanho e acabamento</li><li>Certificado digital de autenticidade</li></ul><a routerLink="/login">Entrar para encomendar</a></div></section>
+    @if (item.conteudoDevocional; as devotional) {
+      <section class="devotional"><header><span>Conteúdo devocional</span><h2>Conheça a história e o significado</h2></header><div class="devotional-grid">
+        @if (devotional.historia) { <article><h3>História</h3><p>{{ devotional.historia }}</p></article> }
+        @if (devotional.significado) { <article><h3>Significado</h3><p>{{ devotional.significado }}</p></article> }
+        @if (devotional.simbologia) { <article><h3>Simbologia</h3><p>{{ devotional.simbologia }}</p></article> }
+        @if (devotional.oracao) { <article class="prayer"><h3>Oração</h3><blockquote>{{ devotional.oracao }}</blockquote></article> }
+        @if (devotional.ocasiaoPresente) { <article><h3>Ocasiões para presentear</h3><p>{{ devotional.ocasiaoPresente }}</p></article> }
+        @if (devotional.cuidados) { <article><h3>Cuidados com a peça</h3><p>{{ devotional.cuidados }}</p></article> }
+      </div></section>
+    }
+  }
+</main>

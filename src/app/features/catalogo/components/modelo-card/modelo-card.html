@@ -1,0 +1,7 @@
+<article>
+  <a class="image" [routerLink]="['/catalogo', modelo().id]">
+    <img [src]="modelo().imagemUrl || '/images/logo-oficina-sao-jose.jpg'" [alt]="modelo().nome" loading="lazy" (error)="useFallback($event)">
+    <span>Produção artesanal</span>
+  </a>
+  <div class="content"><div><p>A partir de</p><strong>{{ modelo().precoBase | currency:'BRL' }}</strong></div><h2>{{ modelo().nome }}</h2><a [routerLink]="['/catalogo', modelo().id]">Conhecer este ícone <span>→</span></a></div>
+</article>

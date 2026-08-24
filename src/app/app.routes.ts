@@ -18,11 +18,18 @@ export const routes: Routes = [
           import('./features/home/pages/home-page').then((module) => module.HomePage),
       },
       {
-        path: 'catalogo', title: 'Catálogo | Ícones Católicos', loadComponent: placeholder,
-        data: {
-          title: 'Catálogo de ícones',
-          description: 'Os modelos e conteúdos devocionais serão apresentados nesta área.',
-        },
+        path: 'catalogo', title: 'Catálogo | Ícones Católicos',
+        loadComponent: () =>
+          import('./features/catalogo/pages/catalogo-page/catalogo-page').then(
+            (module) => module.CatalogoPage,
+          ),
+      },
+      {
+        path: 'catalogo/:id', title: 'Detalhes do ícone | Ícones Católicos',
+        loadComponent: () =>
+          import('./features/catalogo/pages/modelo-detalhe-page/modelo-detalhe-page').then(
+            (module) => module.ModeloDetalhePage,
+          ),
       },
       {
         path: 'certificados/:codigo',
