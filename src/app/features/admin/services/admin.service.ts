@@ -2,7 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { ApiClientService } from '../../../core/services/api-client.service';
-import { CertificadoAdmin, GastoAdmin, IconeProntoAdmin, MaterialAdmin, ModeloIconeDetalhe, Pagamento, Pedido, RelatorioAdmin, VendaAdmin } from '../models/admin.model';
+import { CertificadoAdmin, GastoAdmin, IconeProntoAdmin, MaterialAdmin, ModeloIconeAdminRequest, ModeloIconeDetalhe, Pagamento, Pedido, RelatorioAdmin, VendaAdmin } from '../models/admin.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
@@ -12,6 +12,8 @@ export class AdminService {
   pagamentosPendentes() { return this.api.get<Pagamento[]>('admin/pagamentos/pendentes'); }
   analisarPagamento(id: number, confirmado: boolean) { return this.api.patch<Pagamento, object>(`admin/pagamentos/${id}/analise`, { confirmado, observacao: confirmado ? 'Confirmado pelo painel administrativo.' : 'Recusado pelo painel administrativo.' }); }
   modelos() { return this.api.get<ModeloIconeDetalhe[]>('admin/modelos'); }
+  criarModelo(request: ModeloIconeAdminRequest) { return this.api.post<ModeloIconeDetalhe, ModeloIconeAdminRequest>('admin/modelos', request); }
+  atualizarModelo(id: number, request: ModeloIconeAdminRequest) { return this.api.put<ModeloIconeDetalhe, ModeloIconeAdminRequest>(`admin/modelos/${id}`, request); }
   desativarModelo(id: number) { return this.api.delete(`admin/modelos/${id}`); }
   materiais() { return this.api.get<MaterialAdmin[]>('admin/estoque/materiais'); }
   materiaisBaixos() { return this.api.get<MaterialAdmin[]>('admin/estoque/materiais/estoque-baixo'); }

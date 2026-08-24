@@ -28,4 +28,12 @@ describe('CarrinhoService', () => {
     service.alterarQuantidade(key, 3); expect(service.subtotal()).toBe(750);
     service.remover(key); expect(service.itens()).toEqual([]);
   });
+
+  it('should ignore invalid quantities', () => {
+    service.adicionar({ modeloIconeId: 2, nome: 'São José', imagemUrl: null,
+      precoUnitario: 250, quantidade: 1, personalizacao: { tamanho: 'MEDIO',
+        acabamento: null, frase: null, nomeFamilia: null, observacoes: null } });
+    service.alterarQuantidade(service.itens()[0].chave, 0);
+    expect(service.quantidade()).toBe(1);
+  });
 });

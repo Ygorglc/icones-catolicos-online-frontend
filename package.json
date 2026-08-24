@@ -7,6 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:ci": "ng test --watch=false",
+    "test:coverage": "ng test --watch=false --coverage",
     "serve:ssr:icones-catolicos-online": "node dist/icones-catolicos-online/server/server.mjs"
   },
   "private": true,
@@ -30,6 +32,7 @@
     "@angular/compiler-cli": "^22.1.0",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
+    "@vitest/coverage-v8": "^4.0.8",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2",

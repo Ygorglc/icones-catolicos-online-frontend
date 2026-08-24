@@ -7,3 +7,8 @@ export interface GastoAdmin { id: number; encomendaId: number | null; descricao:
 export interface VendaAdmin { id: number; encomendaId: number; clienteNome: string; valorTotal: number; custoTotal: number; lucroBruto: number; lucroLiquidoEstimado: number; dataVenda: string; }
 export interface RelatorioAdmin { inicio: string; fim: string; quantidadeVendas: number; quantidadeGastos: number; receitaTotal: number; gastosDoPeriodo: number; lucroBrutoTotal: number; lucroLiquidoEstimadoTotal: number; resultadoDoPeriodo: number; vendas: VendaAdmin[]; gastos: GastoAdmin[]; }
 export interface CertificadoAdmin { id: number; encomendaId: number; numeroPeca: string; dataEmissao: string; nomeArtesao: string; modeloIcone: string; codigoPublico: string; autentico: boolean; }
+export interface ModeloIconeAdminRequest {
+  nome: string; descricao: string; imagemUrl: string | null; precoBase: number; ativo: boolean;
+  conteudoDevocional: { historia: string | null; significado: string | null; simbologia: string | null;
+    oracao: string | null; ocasiaoPresente: string | null; cuidados: string | null } | null;
+}
