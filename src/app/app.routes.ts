@@ -55,6 +55,8 @@ export const routes: Routes = [
             (module) => module.CadastroPage,
           ),
       },
+      { path: 'recuperar-senha', title: 'Recuperar senha | Ícones Católicos', loadComponent: () => import('./features/autenticacao/pages/recuperar-senha-page/recuperar-senha-page').then((module) => module.RecuperarSenhaPage) },
+      { path: 'redefinir-senha', title: 'Redefinir senha | Ícones Católicos', loadComponent: () => import('./features/autenticacao/pages/redefinir-senha-page/redefinir-senha-page').then((module) => module.RedefinirSenhaPage) },
       {
         path: 'carrinho', title: 'Carrinho | Ícones Católicos',
         loadComponent: () => import('./features/carrinho/pages/carrinho-page/carrinho-page').then(
