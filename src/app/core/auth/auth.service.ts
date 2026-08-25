@@ -35,6 +35,14 @@ export class AuthService {
   hasRole(role: UserRole): boolean { return this.role() === role; }
   getToken(): string | null { return this.sessionState()?.token ?? null; }
 
+  updateSessionName(nome: string): void {
+    const current = this.sessionState();
+    if (!current) return;
+    const updated = { ...current, nome };
+    this.sessionState.set(updated);
+    if (isPlatformBrowser(this.platformId)) sessionStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+  }
+
   private store(response: AuthenticationResponse): void {
     const session: AuthSession = { ...response, expiresAt: Date.now() + response.expiraEmSegundos * 1000 };
     this.sessionState.set(session);

@@ -25,7 +25,7 @@ export class LoginPage {
       next: (response) => {
         const requested = this.route.snapshot.queryParamMap.get('returnUrl');
         const safeReturnUrl = requested?.startsWith('/') && !requested.startsWith('//') ? requested : null;
-        const destination = safeReturnUrl ?? (response.perfil === 'ADMINISTRADOR' ? '/admin' : '/cliente/pedidos');
+        const destination = safeReturnUrl ?? (response.perfil === 'ADMINISTRADOR' ? '/admin' : '/');
         void this.router.navigateByUrl(destination);
       },
       error: (error: HttpErrorResponse) => this.errorMessage.set(

@@ -83,6 +83,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/cliente/pages/pedido-detalhe-page/pedido-detalhe-page').then(
           (module) => module.PedidoDetalhePage),
       },
+      {
+        path: 'perfil', title: 'Meu perfil | Ícones Católicos',
+        loadComponent: () => import('./features/cliente/pages/perfil-page/perfil-page').then(
+          (module) => module.PerfilPage),
+      },
       { path: '', pathMatch: 'full', redirectTo: 'pedidos' },
     ],
   },

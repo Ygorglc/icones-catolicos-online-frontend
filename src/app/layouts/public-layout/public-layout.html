@@ -7,13 +7,12 @@
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Início</a>
     <a routerLink="/catalogo" routerLinkActive="active">Catálogo</a>
     <a routerLink="/carrinho" routerLinkActive="active">Carrinho@if (carrinho.quantidade()) { <span class="cart-count">{{ carrinho.quantidade() }}</span> }</a>
-    <a routerLink="/login" routerLinkActive="active">Entrar</a>
-    <a class="account" routerLink="/cadastro">Criar conta</a>
+    @if (auth.session(); as user) { <details class="user-menu"><summary>{{ user.nome }}</summary><div>@if(user.perfil === 'CLIENTE'){<a routerLink="/cliente/pedidos">Meus pedidos</a><a routerLink="/cliente/perfil">Configurações de perfil</a>}@else{<a routerLink="/admin">Painel administrativo</a>}<button type="button" (click)="logout()">Sair</button></div></details> } @else { <a routerLink="/login" routerLinkActive="active">Entrar</a><a class="account" routerLink="/cadastro">Criar conta</a> }
   </nav>
 </div></header>
 <main><router-outlet /></main>
 <footer><div class="container footer-content">
   <div class="footer-brand"><img src="/images/logo-oficina-sao-jose.jpg" alt="Oficina de Ícones São José"><div><strong>Oficina de Ícones São José</strong><span>Arte em madeira, fé e tradição.</span></div></div>
-  <nav aria-label="Links do rodapé"><a routerLink="/catalogo">Catálogo</a><a routerLink="/login">Meus pedidos</a></nav>
+  <nav aria-label="Links do rodapé"><a routerLink="/catalogo">Catálogo</a><a [routerLink]="auth.role() === 'CLIENTE' ? '/cliente/pedidos' : (auth.role() === 'ADMINISTRADOR' ? '/admin' : '/login')">{{ auth.role() === 'ADMINISTRADOR' ? 'Painel administrativo' : 'Meus pedidos' }}</a></nav>
   <small>Rio de Janeiro · Atendimento artesanal sob encomenda</small>
 </div></footer>

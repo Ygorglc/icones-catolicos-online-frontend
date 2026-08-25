@@ -63,4 +63,13 @@ describe('AuthService', () => {
     expect(service.isAuthenticated()).toBe(false);
     expect(sessionStorage.getItem(SESSION_KEY)).toBeNull();
   });
+
+  it('should update the name stored in the active session', () => {
+    service.login({ email: 'cliente@teste.com', senha: 'Senha123!' }).subscribe();
+    http.expectOne('http://api.test/api/auth/login').flush({ token: 'jwt', tipo: 'Bearer',
+      expiraEmSegundos: 3600, usuarioId: 1, nome: 'Nome antigo', email: 'cliente@teste.com', perfil: 'CLIENTE' });
+    service.updateSessionName('Nome atualizado');
+    expect(service.session()?.nome).toBe('Nome atualizado');
+    expect(JSON.parse(sessionStorage.getItem(SESSION_KEY) ?? '{}').nome).toBe('Nome atualizado');
+  });
 });
