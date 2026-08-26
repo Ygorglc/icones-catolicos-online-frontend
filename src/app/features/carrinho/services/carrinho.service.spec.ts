@@ -1,4 +1,7 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { AuthService } from '../../../core/auth/auth.service';
+import { ApiClientService } from '../../../core/services/api-client.service';
 import { CarrinhoService } from './carrinho.service';
 
 describe('CarrinhoService', () => {
@@ -6,7 +9,10 @@ describe('CarrinhoService', () => {
 
   beforeEach(() => {
     localStorage.clear();
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ providers: [
+      { provide: AuthService, useValue: { session: signal(null).asReadonly() } },
+      { provide: ApiClientService, useValue: {} },
+    ] });
     service = TestBed.inject(CarrinhoService);
   });
 
@@ -17,7 +23,7 @@ describe('CarrinhoService', () => {
       precoUnitario: 250, quantidade: 2, personalizacao: { tamanho: 'MEDIO',
         acabamento: null, frase: null, nomeFamilia: null, observacoes: null } });
     expect(service.quantidade()).toBe(2); expect(service.subtotal()).toBe(500);
-    expect(JSON.parse(localStorage.getItem('oficina-sao-jose.carrinho') ?? '[]')).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem('oficina-sao-jose.carrinho.visitante') ?? '[]')).toHaveLength(1);
   });
 
   it('should update quantity and remove an item', () => {
