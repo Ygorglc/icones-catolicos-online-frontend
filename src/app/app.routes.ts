@@ -68,7 +68,7 @@ export const routes: Routes = [
           (module) => module.CarrinhoPage),
       },
       {
-        path: 'checkout', title: 'Checkout | Ícones Católicos', canActivate: [clientGuard],
+        path: 'checkout', title: 'Finalizar compra | Ícones Católicos', canActivate: [clientGuard],
         loadComponent: () => import('./features/checkout/pages/checkout-page/checkout-page').then(
           (module) => module.CheckoutPage),
       },
