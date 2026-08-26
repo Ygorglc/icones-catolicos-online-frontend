@@ -8,13 +8,6 @@
     <label>Confirmar senha<input type="password" formControlName="confirmarSenha" autocomplete="new-password">@if (passwordMismatch()) { <small>As senhas não coincidem.</small> }</label>
     <label>Telefone<input formControlName="telefone" autocomplete="tel" inputmode="numeric" maxlength="11" placeholder="DDD e número, somente dígitos">@if (form.controls.telefone.touched && form.controls.telefone.invalid) { <small>Informe um telefone válido com DDD.</small> }</label>
     <label>CPF<input formControlName="cpf" inputmode="numeric" maxlength="11" placeholder="Somente números">@if (form.controls.cpf.touched && form.controls.cpf.invalid) { <small>Informe um CPF válido.</small> }</label>
-    <label>CEP<input formControlName="cep" inputmode="numeric" maxlength="8" autocomplete="postal-code" placeholder="Somente números">@if (form.controls.cep.touched && form.controls.cep.invalid) { <small>Informe um CEP válido com 8 dígitos.</small> }</label>
-    <label class="full">Logradouro<input formControlName="logradouro" autocomplete="address-line1">@if (form.controls.logradouro.touched && form.controls.logradouro.invalid) { <small>Informe o logradouro.</small> }</label>
-    <label>Número<input formControlName="numero" autocomplete="address-line2">@if (form.controls.numero.touched && form.controls.numero.invalid) { <small>Informe o número ou “S/N”.</small> }</label>
-    <label>Complemento <em>opcional</em><input formControlName="complemento" autocomplete="address-line3"></label>
-    <label>Bairro<input formControlName="bairro">@if (form.controls.bairro.touched && form.controls.bairro.invalid) { <small>Informe o bairro.</small> }</label>
-    <label>Cidade<input formControlName="cidade" autocomplete="address-level2">@if (form.controls.cidade.touched && form.controls.cidade.invalid) { <small>Informe a cidade.</small> }</label>
-    <label>Estado<select formControlName="uf" autocomplete="address-level1"><option value="" disabled>Selecione o estado</option>@for (estado of estados; track estado.sigla) { <option [value]="estado.sigla">{{ estado.nome }} ({{ estado.sigla }})</option> }</select>@if (form.controls.uf.touched && form.controls.uf.invalid) { <small>Selecione o estado.</small> }</label>
   </div><button type="submit" [disabled]="submitting()">{{ submitting() ? 'Criando conta...' : 'Criar minha conta' }}</button></form>
   <p class="alternative">Já possui cadastro? <a routerLink="/login">Entrar</a></p>
 </div></div></section>

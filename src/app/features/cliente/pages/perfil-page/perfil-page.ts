@@ -1,36 +1,31 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { finalize } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth.service';
-import { PerfilClienteService } from '../../services/perfil-cliente.service';
-import { SenhaService } from '../../../autenticacao/services/senha.service';
-import { cepValidator } from '../../../../shared/validators/cep.validator';
 import { ESTADOS_BRASIL } from '../../../../shared/data/estados-brasil';
+import { cepValidator } from '../../../../shared/validators/cep.validator';
+import { SenhaService } from '../../../autenticacao/services/senha.service';
+import { EnderecoCliente } from '../../models/perfil-cliente.model';
+import { PerfilClienteService } from '../../services/perfil-cliente.service';
 
 @Component({ selector: 'app-perfil-page', imports: [ReactiveFormsModule], templateUrl: './perfil-page.html', styleUrl: './perfil-page.scss' })
 export class PerfilPage implements OnInit {
   private readonly service = inject(PerfilClienteService); private readonly auth = inject(AuthService);
-  private readonly senhaService = inject(SenhaService);
-  private readonly fb = inject(FormBuilder); private readonly destroyRef = inject(DestroyRef);
+  private readonly senhaService = inject(SenhaService); private readonly fb = inject(FormBuilder); private readonly destroyRef = inject(DestroyRef);
   protected readonly loading = signal(true); protected readonly saving = signal(false); protected readonly message = signal<string | null>(null); protected readonly error = signal(false);
-  protected readonly estados = ESTADOS_BRASIL;
-  protected readonly form = this.fb.nonNullable.group({
-    nome: ['', [Validators.required, Validators.maxLength(120)]],
-    email: [{ value: '', disabled: true }],
-    telefone: ['', [Validators.required, Validators.pattern(/^[1-9]{2}9?\d{8}$/)]],
-    cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
-    cep: ['', [Validators.required, cepValidator]],
-    logradouro: ['', [Validators.required, Validators.maxLength(150)]],
-    numero: ['', [Validators.required, Validators.maxLength(20)]],
-    complemento: ['', Validators.maxLength(100)],
-    bairro: ['', [Validators.required, Validators.maxLength(100)]],
-    cidade: ['', [Validators.required, Validators.maxLength(100)]],
-    uf: ['', [Validators.required, Validators.pattern(/^[A-Za-z]{2}$/)]],
-  });
+  protected readonly enderecos = signal<EnderecoCliente[]>([]); protected readonly enderecoEditando = signal<number | null>(null); protected readonly estados = ESTADOS_BRASIL;
+  protected readonly form = this.fb.nonNullable.group({ nome: ['', [Validators.required, Validators.maxLength(120)]], email: [{ value: '', disabled: true }], telefone: ['', [Validators.required, Validators.pattern(/^[1-9]{2}9?\d{8}$/)]], cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]] });
+  protected readonly enderecoForm = this.fb.nonNullable.group({ apelido: ['', [Validators.required, Validators.maxLength(60)]], cep: ['', [Validators.required, cepValidator]], logradouro: ['', [Validators.required, Validators.maxLength(150)]], numero: ['', [Validators.required, Validators.maxLength(20)]], complemento: ['', Validators.maxLength(100)], bairro: ['', [Validators.required, Validators.maxLength(100)]], cidade: ['', [Validators.required, Validators.maxLength(100)]], uf: ['', Validators.required], principal: [false] });
   protected readonly passwordForm = this.fb.nonNullable.group({ senhaAtual: ['', Validators.required], novaSenha: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]], confirmacao: ['', Validators.required] });
+
   ngOnInit(): void { this.load(); }
-  protected load(): void { this.loading.set(true); this.error.set(false); this.service.buscar().pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false))).subscribe({ next: (p) => this.form.reset({ nome: p.nome, email: p.email, telefone: p.telefone ?? '', cpf: p.cpf ?? '', cep: p.cep ?? '', logradouro: p.logradouro ?? '', numero: p.numero ?? '', complemento: p.complemento ?? '', bairro: p.bairro ?? '', cidade: p.cidade ?? '', uf: p.uf ?? '' }), error: () => this.error.set(true) }); }
-  protected save(): void { if (this.form.invalid || this.saving()) { this.form.markAllAsTouched(); return; } const v = this.form.getRawValue(); this.saving.set(true); this.message.set(null); this.service.atualizar({ nome: v.nome.trim(), telefone: v.telefone.trim(), cpf: v.cpf.trim(), cep: v.cep.trim(), logradouro: v.logradouro.trim(), numero: v.numero.trim(), complemento: v.complemento.trim() || null, bairro: v.bairro.trim(), cidade: v.cidade.trim(), uf: v.uf.trim().toUpperCase() }).pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.saving.set(false))).subscribe({ next: (p) => { this.auth.updateSessionName(p.nome); this.form.patchValue({ nome: p.nome, telefone: p.telefone ?? '', cpf: p.cpf ?? '', cep: p.cep ?? '', logradouro: p.logradouro ?? '', numero: p.numero ?? '', complemento: p.complemento ?? '', bairro: p.bairro ?? '', cidade: p.cidade ?? '', uf: p.uf ?? '' }); this.message.set('Dados cadastrais atualizados com sucesso.'); }, error: () => this.message.set('Não foi possível atualizar os dados. Revise CPF, telefone e CEP.') }); }
+  protected load(): void { this.loading.set(true); this.error.set(false); forkJoin({ perfil: this.service.buscar(), enderecos: this.service.listarEnderecos() }).pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false))).subscribe({ next: ({ perfil, enderecos }) => { this.form.reset({ nome: perfil.nome, email: perfil.email, telefone: perfil.telefone ?? '', cpf: perfil.cpf ?? '' }); this.enderecos.set(enderecos); }, error: () => this.error.set(true) }); }
+  protected save(): void { if (this.form.invalid || this.saving()) { this.form.markAllAsTouched(); return; } const v = this.form.getRawValue(); this.saving.set(true); this.message.set(null); this.service.atualizar({ nome: v.nome.trim(), telefone: v.telefone.trim(), cpf: v.cpf.trim() }).pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.saving.set(false))).subscribe({ next: (p) => { this.auth.updateSessionName(p.nome); this.form.patchValue({ nome: p.nome, telefone: p.telefone ?? '', cpf: p.cpf ?? '' }); this.message.set('Dados cadastrais atualizados com sucesso.'); }, error: () => this.message.set('Não foi possível atualizar os dados. Revise CPF e telefone.') }); }
+  protected editarEndereco(endereco: EnderecoCliente): void { this.enderecoEditando.set(endereco.id); this.enderecoForm.reset({ apelido: endereco.apelido, cep: endereco.cep, logradouro: endereco.logradouro, numero: endereco.numero, complemento: endereco.complemento ?? '', bairro: endereco.bairro, cidade: endereco.cidade, uf: endereco.uf, principal: endereco.principal }); }
+  protected cancelarEndereco(): void { this.enderecoEditando.set(null); this.enderecoForm.reset({ apelido: '', cep: '', logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '', principal: false }); }
+  protected salvarEndereco(): void { if (this.enderecoForm.invalid || this.saving()) { this.enderecoForm.markAllAsTouched(); return; } const v = this.enderecoForm.getRawValue(); const request = { ...v, apelido: v.apelido.trim(), cep: v.cep.trim(), logradouro: v.logradouro.trim(), numero: v.numero.trim(), complemento: v.complemento.trim() || null, bairro: v.bairro.trim(), cidade: v.cidade.trim(), uf: v.uf }; const id = this.enderecoEditando(); const operation = id === null ? this.service.criarEndereco(request) : this.service.atualizarEndereco(id, request); this.saving.set(true); operation.pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.saving.set(false))).subscribe({ next: () => { this.cancelarEndereco(); this.recarregarEnderecos(); this.message.set('Endereço salvo com sucesso.'); }, error: () => this.message.set('Não foi possível salvar o endereço. Revise o CEP e os campos obrigatórios.') }); }
+  protected excluirEndereco(id: number): void { if (this.saving()) return; this.saving.set(true); this.service.excluirEndereco(id).pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.saving.set(false))).subscribe({ next: () => { this.recarregarEnderecos(); this.message.set('Endereço removido.'); }, error: () => this.message.set('Não foi possível remover o endereço.') }); }
   protected changePassword(): void { const v = this.passwordForm.getRawValue(); if (this.passwordForm.invalid || v.novaSenha !== v.confirmacao || this.saving()) { this.passwordForm.markAllAsTouched(); this.message.set(v.novaSenha !== v.confirmacao ? 'As novas senhas não coincidem.' : 'Revise os campos da senha.'); return; } this.saving.set(true); this.message.set(null); this.senhaService.alterar(v.senhaAtual, v.novaSenha).pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.saving.set(false))).subscribe({ next: () => { this.passwordForm.reset(); this.message.set('Senha alterada com sucesso.'); }, error: () => this.message.set('Não foi possível alterar a senha. Confira a senha atual.') }); }
+  private recarregarEnderecos(): void { this.service.listarEnderecos().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((items) => this.enderecos.set(items)); }
 }
