@@ -47,6 +47,12 @@ export class CarrinhoService {
 
   limpar(): void { this.state.set([]); if (!this.currentUserId) this.persistGuest(); else this.api.delete('carrinho').subscribe(); }
 
+  limparLocal(): void {
+    this.state.set([]);
+    localStorage.removeItem(GUEST_KEY);
+    localStorage.removeItem(LEGACY_KEY);
+  }
+
   private syncAuthenticated(): void {
     const guest = this.readGuest();
     this.api.get<RemoteItem[]>('carrinho').subscribe({ next: (remote) => {
