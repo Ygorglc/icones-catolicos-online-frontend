@@ -44,17 +44,23 @@ describe('AuthService', () => {
     expect(JSON.parse(sessionStorage.getItem(SESSION_KEY) ?? '{}').token).toBe('jwt-token');
   });
 
-  it('should register a client and start their session', () => {
+  it('should register a client without starting a session before email confirmation', () => {
     service.register({ nome: 'Maria', email: 'maria@teste.com', senha: 'Senha123!',
-      telefone: null, cpf: null, endereco: null }).subscribe();
+      telefone: '21999999999', cpf: '52998224725', endereco: null }).subscribe();
 
     const request = http.expectOne('http://api.test/api/auth/cadastro');
     expect(request.request.method).toBe('POST');
-    request.flush({ token: 'new-token', tipo: 'Bearer', expiraEmSegundos: 3600,
-      usuarioId: 11, nome: 'Maria', email: 'maria@teste.com', perfil: 'CLIENTE' });
+    request.flush({ mensagem: 'Verifique seu e-mail.' });
 
-    expect(service.getToken()).toBe('new-token');
-    expect(service.role()).toBe('CLIENTE');
+    expect(service.getToken()).toBeNull();
+    expect(service.role()).toBeNull();
+  });
+
+  it('should confirm email using the received token', () => {
+    service.confirmEmail('token-confirmacao').subscribe();
+    const request = http.expectOne('http://api.test/api/auth/email/confirmacao');
+    expect(request.request.body).toEqual({ token: 'token-confirmacao' });
+    request.flush({ mensagem: 'E-mail confirmado.' });
   });
 
   it('should clear the session on logout', () => {

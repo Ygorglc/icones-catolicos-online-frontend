@@ -2,7 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ApiClientService } from '../services/api-client.service';
-import { AuthenticationResponse, AuthSession, LoginRequest, RegistrationRequest, UserRole } from './auth.model';
+import { AuthenticationResponse, AuthSession, LoginRequest, MessageResponse, RegistrationRequest, RegistrationResponse, UserRole } from './auth.model';
 
 const SESSION_KEY = 'oficina-sao-jose.auth';
 
@@ -22,9 +22,16 @@ export class AuthService {
       .pipe(tap((response) => this.store(response)));
   }
 
-  register(request: RegistrationRequest): Observable<AuthenticationResponse> {
-    return this.api.post<AuthenticationResponse, RegistrationRequest>('auth/cadastro', request)
-      .pipe(tap((response) => this.store(response)));
+  register(request: RegistrationRequest): Observable<RegistrationResponse> {
+    return this.api.post<RegistrationResponse, RegistrationRequest>('auth/cadastro', request);
+  }
+
+  confirmEmail(token: string): Observable<MessageResponse> {
+    return this.api.post<MessageResponse, object>('auth/email/confirmacao', { token });
+  }
+
+  resendConfirmation(email: string): Observable<MessageResponse> {
+    return this.api.post<MessageResponse, object>('auth/email/confirmacao/reenviar', { email });
   }
 
   logout(): void {
