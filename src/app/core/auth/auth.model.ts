@@ -3,7 +3,8 @@ export type UserRole = 'CLIENTE' | 'ADMINISTRADOR';
 export interface LoginRequest { email: string; senha: string; }
 export interface RegistrationRequest {
   nome: string; email: string; senha: string; telefone: string;
-  cpf: string; endereco: string | null;
+  cpf: string; cep: string; logradouro: string; numero: string;
+  complemento: string | null; bairro: string; cidade: string; uf: string;
 }
 export interface RegistrationResponse { mensagem: string; }
 export interface MessageResponse { mensagem: string; }

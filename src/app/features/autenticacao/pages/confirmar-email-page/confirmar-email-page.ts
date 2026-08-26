@@ -1,4 +1,5 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, DestroyRef, inject, PLATFORM_ID, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -16,6 +17,7 @@ export class ConfirmarEmailPage {
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
   protected readonly loading = signal(false);
   protected readonly success = signal(false);
   protected readonly message = signal('Enviamos um link de confirmação. Verifique sua caixa de entrada e o spam.');
@@ -23,7 +25,7 @@ export class ConfirmarEmailPage {
 
   constructor() {
     const token = this.route.snapshot.queryParamMap.get('token');
-    if (token) this.confirm(token);
+    if (token && isPlatformBrowser(this.platformId)) this.confirm(token);
   }
 
   protected resend(): void {

@@ -46,7 +46,9 @@ describe('AuthService', () => {
 
   it('should register a client without starting a session before email confirmation', () => {
     service.register({ nome: 'Maria', email: 'maria@teste.com', senha: 'Senha123!',
-      telefone: '21999999999', cpf: '52998224725', endereco: null }).subscribe();
+      telefone: '21999999999', cpf: '52998224725', cep: '20040002',
+      logradouro: 'Rua da Assembleia', numero: '10', complemento: null,
+      bairro: 'Centro', cidade: 'Rio de Janeiro', uf: 'RJ' }).subscribe();
 
     const request = http.expectOne('http://api.test/api/auth/cadastro');
     expect(request.request.method).toBe('POST');
