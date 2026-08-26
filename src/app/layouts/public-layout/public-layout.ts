@@ -10,5 +10,9 @@ import { CarrinhoService } from '../../features/carrinho/services/carrinho.servi
 export class PublicLayout {
   protected readonly carrinho = inject(CarrinhoService); protected readonly auth = inject(AuthService);
   private readonly router = inject(Router);
-  protected logout(): void { this.carrinho.limparLocal(); this.auth.logout(); void this.router.navigateByUrl('/'); }
+  protected logout(): void {
+    this.carrinho.limparLocal();
+    this.auth.logout();
+    void this.router.navigateByUrl('/');
+  }
 }

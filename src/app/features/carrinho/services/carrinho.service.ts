@@ -20,7 +20,7 @@ export class CarrinhoService {
     if (!isPlatformBrowser(this.platformId)) return;
     this.restoreGuest();
     effect(() => {
-      const session = this.auth.session(); const userId = session?.perfil === 'CLIENTE' ? session.usuarioId : null;
+      const session = this.auth.session(); const userId = session?.usuarioId ?? null;
       if (userId === this.currentUserId) return; this.currentUserId = userId;
       if (userId === null) this.restoreGuest(); else this.syncAuthenticated();
     });
