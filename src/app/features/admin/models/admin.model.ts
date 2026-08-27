@@ -12,3 +12,4 @@ export interface ModeloIconeAdminRequest {
   conteudoDevocional: { historia: string | null; significado: string | null; simbologia: string | null;
     oracao: string | null; ocasiaoPresente: string | null; cuidados: string | null } | null;
 }
+export interface ConfiguracaoLoja { entregaHabilitada: boolean; chavePix: string | null; dadosDeposito: string | null; }

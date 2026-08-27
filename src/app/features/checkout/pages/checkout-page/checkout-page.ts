@@ -6,7 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { CarrinhoService } from '../../../carrinho/services/carrinho.service';
 import { FormaPagamento, TipoEntrega, TipoPagamento } from '../../models/checkout.model';
-import { CheckoutService } from '../../services/checkout.service';
+import { CheckoutService, ConfiguracaoCheckout } from '../../services/checkout.service';
 import { PerfilClienteService } from '../../../cliente/services/perfil-cliente.service';
 import { EnderecoCliente } from '../../../cliente/models/perfil-cliente.model';
 import { ESTADOS_BRASIL } from '../../../../shared/data/estados-brasil';
@@ -18,6 +18,7 @@ export class CheckoutPage implements OnInit {
   private readonly destroyRef = inject(DestroyRef); private readonly router = inject(Router);
   protected readonly carrinho = inject(CarrinhoService); protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly configuracao = signal<ConfiguracaoCheckout>({ entregaHabilitada: true, chavePix: null, dadosDeposito: null });
   private readonly perfil = inject(PerfilClienteService);
   protected readonly enderecos = signal<EnderecoCliente[]>([]); protected readonly enderecoSelecionado = signal<number | null>(null);
   protected readonly cadastrandoEndereco = signal(false); protected readonly estados = ESTADOS_BRASIL;
@@ -28,7 +29,23 @@ export class CheckoutPage implements OnInit {
   });
   protected readonly enderecoForm = this.fb.nonNullable.group({ apelido: ['Casa', [Validators.required, Validators.maxLength(60)]], cep: ['', [Validators.required, cepValidator]], logradouro: ['', [Validators.required, Validators.maxLength(150)]], numero: ['', [Validators.required, Validators.maxLength(20)]], complemento: ['', Validators.maxLength(100)], bairro: ['', [Validators.required, Validators.maxLength(100)]], cidade: ['', [Validators.required, Validators.maxLength(100)]], uf: ['', Validators.required], principal: [true] });
 
-  ngOnInit(): void { this.carregarEnderecos(); }
+  ngOnInit(): void {
+    this.carregarEnderecos();
+    this.checkout.configuracao().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (configuracao) => {
+        this.configuracao.set(configuracao);
+        if (!configuracao.entregaHabilitada) this.form.controls.tipoEntrega.setValue('RETIRADA');
+      },
+      error: () => this.errorMessage.set('Não foi possível carregar as formas de entrega e pagamento.')
+    });
+  }
+
+  protected valorPagamento(): number {
+    const total = this.carrinho.subtotal();
+    return this.form.controls.tipoPagamento.value === 'SINAL'
+      ? Math.round(total * 30) / 100
+      : total;
+  }
 
   protected submit(): void {
     if (this.form.invalid || this.submitting() || !this.carrinho.itens().length) { this.form.markAllAsTouched(); return; }

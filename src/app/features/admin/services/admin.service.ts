@@ -2,7 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { ApiClientService } from '../../../core/services/api-client.service';
-import { CertificadoAdmin, GastoAdmin, IconeProntoAdmin, MaterialAdmin, ModeloIconeAdminRequest, ModeloIconeDetalhe, Pagamento, Pedido, RelatorioAdmin, VendaAdmin } from '../models/admin.model';
+import { CertificadoAdmin, ConfiguracaoLoja, GastoAdmin, IconeProntoAdmin, MaterialAdmin, ModeloIconeAdminRequest, ModeloIconeDetalhe, Pagamento, Pedido, RelatorioAdmin, VendaAdmin } from '../models/admin.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
@@ -11,6 +11,7 @@ export class AdminService {
   atualizarStatus(id: number, status: string) { return this.api.patch<Pedido, object>(`admin/encomendas/${id}/status`, { status }); }
   pagamentosPendentes() { return this.api.get<Pagamento[]>('admin/pagamentos/pendentes'); }
   analisarPagamento(id: number, confirmado: boolean) { return this.api.patch<Pagamento, object>(`admin/pagamentos/${id}/analise`, { confirmado, observacao: confirmado ? 'Confirmado pelo painel administrativo.' : 'Recusado pelo painel administrativo.' }); }
+  confirmarPagamentoExterno(encomendaId: number, tipo: 'SINAL' | 'INTEGRAL', forma: 'PIX' | 'DINHEIRO' | 'DEPOSITO') { return this.api.post<Pagamento, object>(`admin/encomendas/${encomendaId}/pagamentos/confirmacao-externa`, { tipo, forma, origem: 'EXTERNO_MANUAL' }); }
   modelos() { return this.api.get<ModeloIconeDetalhe[]>('admin/modelos'); }
   criarModelo(request: ModeloIconeAdminRequest) { return this.api.post<ModeloIconeDetalhe, ModeloIconeAdminRequest>('admin/modelos', request); }
   atualizarModelo(id: number, request: ModeloIconeAdminRequest) { return this.api.put<ModeloIconeDetalhe, ModeloIconeAdminRequest>(`admin/modelos/${id}`, request); }
@@ -24,5 +25,7 @@ export class AdminService {
   vendas() { return this.api.get<VendaAdmin[]>('admin/financeiro/vendas'); }
   relatorio(inicio: string, fim: string) { return this.api.get<RelatorioAdmin>('admin/financeiro/relatorios', new HttpParams().set('inicio', inicio).set('fim', fim)); }
   certificados() { return this.api.get<CertificadoAdmin[]>('admin/certificados'); }
+  configuracaoLoja() { return this.api.get<ConfiguracaoLoja>('admin/configuracao-loja'); }
+  atualizarConfiguracaoLoja(request: ConfiguracaoLoja) { return this.api.put<ConfiguracaoLoja, ConfiguracaoLoja>('admin/configuracao-loja', request); }
   resumo() { return forkJoin({ encomendas: this.encomendas(), pagamentos: this.pagamentosPendentes(), materiais: this.materiaisBaixos(), modelos: this.modelos(), icones: this.iconesProntos(), gastos: this.gastos(), vendas: this.vendas() }); }
 }

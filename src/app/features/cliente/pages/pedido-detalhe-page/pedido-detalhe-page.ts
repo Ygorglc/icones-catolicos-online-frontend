@@ -17,7 +17,7 @@ export class PedidoDetalhePage implements OnInit {
   protected readonly certificado = signal<CertificadoCliente | null>(null); protected readonly loading = signal(true);
   protected readonly failed = signal(false); protected readonly paying = signal(false); protected readonly message = signal<string | null>(null);
   protected readonly label = pedidoLabel; protected readonly paymentForm = this.fb.nonNullable.group({ forma: ['PIX' as FormaPagamento] });
-  protected readonly etapas = ['ENCOMENDA_CRIADA', 'SINAL_PAGO', 'PRODUCAO_LIBERADA', 'EM_PRODUCAO', 'EM_ACABAMENTO', 'PRONTO_PARA_ENTREGA_RETIRADA', 'ENVIADO_OU_RETIRADO', 'CONCLUIDO'];
+  protected readonly etapas = ['ENCOMENDA_CRIADA', 'PAGAMENTO_INICIAL_CONFIRMADO', 'PRODUCAO_LIBERADA', 'EM_PRODUCAO', 'EM_ACABAMENTO', 'PRONTO_PARA_ENTREGA_RETIRADA', 'ENVIADO_OU_RETIRADO', 'CONCLUIDO'];
   ngOnInit(): void { this.load(); }
   protected load(): void {
     const id = Number(this.route.snapshot.paramMap.get('id')); if (!Number.isInteger(id) || id <= 0) { this.failed.set(true); this.loading.set(false); return; }
@@ -28,7 +28,7 @@ export class PedidoDetalhePage implements OnInit {
   }
   protected etapaConcluida(etapa: string): boolean {
     const atual = this.pedido()?.statusEncomenda; if (!atual || atual === 'CANCELADO') return false;
-    const etapaAtual = atual === 'AGUARDANDO_PAGAMENTO_SINAL' ? 'ENCOMENDA_CRIADA' : atual;
+    const etapaAtual = atual === 'AGUARDANDO_PAGAMENTO_INICIAL' ? 'ENCOMENDA_CRIADA' : atual;
     const indiceAtual = this.etapas.indexOf(etapaAtual); const indice = this.etapas.indexOf(etapa);
     if (atual === 'AGUARDANDO_PAGAMENTO_RESTANTE') return indice <= this.etapas.indexOf('PRONTO_PARA_ENTREGA_RETIRADA');
     return indiceAtual >= indice;
@@ -37,6 +37,6 @@ export class PedidoDetalhePage implements OnInit {
     const pedido = this.pedido(); if (!pedido || this.paying()) return; this.paying.set(true); this.message.set(null);
     const tipo = (this.historico()?.totalPago ?? 0) > 0 ? 'RESTANTE' : 'SINAL';
     this.service.pagar(pedido.id, tipo, this.paymentForm.controls.forma.value).pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.paying.set(false)))
-      .subscribe({ next: () => { this.message.set('Pagamento registrado com sucesso.'); this.load(); }, error: () => this.message.set('Não foi possível registrar o pagamento.') });
+      .subscribe({ next: () => { this.message.set('Pagamento registrado e enviado para confirmação.'); this.load(); }, error: () => this.message.set('Não foi possível registrar o pagamento.') });
   }
 }

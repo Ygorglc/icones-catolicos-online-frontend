@@ -27,4 +27,11 @@ describe('PedidosClienteService', () => {
     const request = http.expectOne('http://api.test/api/encomendas/12/pagamentos');
     expect(request.request.body).toEqual({ tipo: 'RESTANTE', forma: 'DINHEIRO', origem: 'EXTERNO_MANUAL' }); request.flush({});
   });
+
+  it('should register a deposit with external confirmation', () => {
+    service.pagar(12, 'RESTANTE', 'DEPOSITO').subscribe();
+    const request = http.expectOne('http://api.test/api/encomendas/12/pagamentos');
+    expect(request.request.body).toEqual({ tipo: 'RESTANTE', forma: 'DEPOSITO', origem: 'EXTERNO_MANUAL' });
+    request.flush({});
+  });
 });

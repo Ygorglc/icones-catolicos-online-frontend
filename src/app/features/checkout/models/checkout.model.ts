@@ -2,7 +2,7 @@ import { PersonalizacaoCarrinho } from '../../carrinho/models/carrinho.model';
 
 export type TipoEntrega = 'ENTREGA' | 'RETIRADA';
 export type TipoPagamento = 'SINAL' | 'INTEGRAL';
-export type FormaPagamento = 'PIX' | 'DINHEIRO' | 'CARTAO_DEBITO' | 'CARTAO_CREDITO';
+export type FormaPagamento = 'PIX' | 'DINHEIRO' | 'DEPOSITO';
 
 export interface CriarEncomendaRequest {
   tipoEntrega: TipoEntrega;

@@ -114,6 +114,7 @@ export const routes: Routes = [
       { path: 'modelos', title: 'Modelos | Administração', loadComponent: () => import('./features/admin/pages/modelos-admin-page/modelos-admin-page').then((module) => module.ModelosAdminPage) },
       { path: 'financeiro', title: 'Financeiro | Administração', loadComponent: () => import('./features/admin/pages/financeiro-admin-page/financeiro-admin-page').then((module) => module.FinanceiroAdminPage) },
       { path: 'certificados', title: 'Certificados | Administração', loadComponent: () => import('./features/admin/pages/certificados-admin-page/certificados-admin-page').then((module) => module.CertificadosAdminPage) },
+      { path: 'configuracoes', title: 'Configurações da loja | Administração', loadComponent: () => import('./features/admin/pages/configuracao-loja-page/configuracao-loja-page').then((module) => module.ConfiguracaoLojaPage) },
     ],
   },
   { path: '**', redirectTo: '' },

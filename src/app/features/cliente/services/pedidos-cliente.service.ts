@@ -12,7 +12,6 @@ export class PedidosClienteService {
   pagamentos(id: number): Observable<HistoricoPagamentos> { return this.api.get<HistoricoPagamentos>(`encomendas/${id}/pagamentos`); }
   certificado(id: number): Observable<CertificadoCliente> { return this.api.get<CertificadoCliente>(`encomendas/${id}/certificado`); }
   pagar(id: number, tipo: TipoPagamento | 'RESTANTE', forma: FormaPagamento) {
-    const origem = forma === 'DINHEIRO' ? 'EXTERNO_MANUAL' : 'SIMULADO_SISTEMA';
-    return this.api.post(`encomendas/${id}/pagamentos`, { tipo, forma, origem });
+    return this.api.post(`encomendas/${id}/pagamentos`, { tipo, forma, origem: 'EXTERNO_MANUAL' });
   }
 }
