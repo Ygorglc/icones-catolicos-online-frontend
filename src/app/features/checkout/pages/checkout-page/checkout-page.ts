@@ -18,6 +18,7 @@ export class CheckoutPage implements OnInit {
   private readonly destroyRef = inject(DestroyRef); private readonly router = inject(Router);
   protected readonly carrinho = inject(CarrinhoService); protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly comprovante = signal<File | null>(null);
   protected readonly configuracao = signal<ConfiguracaoCheckout>({ entregaHabilitada: true, chavePix: null, dadosDeposito: null });
   private readonly perfil = inject(PerfilClienteService);
   protected readonly enderecos = signal<EnderecoCliente[]>([]); protected readonly enderecoSelecionado = signal<number | null>(null);
@@ -47,18 +48,29 @@ export class CheckoutPage implements OnInit {
       : total;
   }
 
+  protected selecionarComprovante(event: Event): void {
+    const input = event.target as HTMLInputElement; const arquivo = input.files?.[0] ?? null;
+    if (!arquivo) { this.comprovante.set(null); return; }
+    const permitidos = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+    if (!permitidos.includes(arquivo.type) || arquivo.size > 10 * 1024 * 1024) {
+      this.comprovante.set(null); input.value = '';
+      this.errorMessage.set('Envie um comprovante PDF, JPG, PNG ou WEBP de até 10 MB.'); return;
+    }
+    this.errorMessage.set(null); this.comprovante.set(arquivo);
+  }
+
   protected submit(): void {
     if (this.form.invalid || this.submitting() || !this.carrinho.itens().length) { this.form.markAllAsTouched(); return; }
     const value = this.form.getRawValue();
     const endereco = this.enderecos().find((item) => item.id === this.enderecoSelecionado());
     if (value.tipoEntrega === 'ENTREGA' && !endereco) { this.errorMessage.set('Selecione ou cadastre um endereço para entrega.'); return; }
-    this.submitting.set(true); this.errorMessage.set(null); let encomendaId = 0; let pagamentoRegistrado = true;
+    this.submitting.set(true); this.errorMessage.set(null); let encomendaId = 0;
     this.checkout.criarEncomenda({ tipoEntrega: value.tipoEntrega, enderecoEntrega: value.tipoEntrega === 'ENTREGA' && endereco ? this.formatarEndereco(endereco) : null,
       observacoes: value.observacoes.trim() || null, itens: this.carrinho.itens().map((item) => ({ modeloIconeId: item.modeloIconeId, quantidade: item.quantidade, personalizacao: item.personalizacao })) })
       .pipe(tap((encomenda) => encomendaId = encomenda.id), switchMap((encomenda) => this.checkout.registrarPagamento(encomenda.id, value.tipoPagamento, value.formaPagamento)
-          .pipe(catchError(() => { pagamentoRegistrado = false; return of(null); }))),
+          .pipe(switchMap((pagamento) => { const arquivo = this.comprovante(); if (!arquivo || (value.formaPagamento !== 'PIX' && value.formaPagamento !== 'DEPOSITO')) return of(pagamento); return this.checkout.anexarComprovante(encomenda.id, pagamento.id, arquivo).pipe(catchError(() => of(pagamento))); }), catchError(() => of(null)))),
         takeUntilDestroyed(this.destroyRef), finalize(() => this.submitting.set(false)))
-      .subscribe({ next: () => { this.carrinho.limpar(); void this.router.navigate(['/cliente/pedidos'], { queryParams: { criada: encomendaId, pagamento: pagamentoRegistrado ? 'registrado' : 'pendente' } }); },
+      .subscribe({ next: () => { this.carrinho.limpar(); void this.router.navigate(['/cliente/pedidos', encomendaId]); },
         error: () => this.errorMessage.set('Não foi possível criar a encomenda. Revise os dados e tente novamente.') });
   }
 

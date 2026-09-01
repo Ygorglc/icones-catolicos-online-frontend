@@ -11,6 +11,7 @@ export class AdminService {
   atualizarStatus(id: number, status: string) { return this.api.patch<Pedido, object>(`admin/encomendas/${id}/status`, { status }); }
   pagamentosPendentes() { return this.api.get<Pagamento[]>('admin/pagamentos/pendentes'); }
   analisarPagamento(id: number, confirmado: boolean) { return this.api.patch<Pagamento, object>(`admin/pagamentos/${id}/analise`, { confirmado, observacao: confirmado ? 'Confirmado pelo painel administrativo.' : 'Recusado pelo painel administrativo.' }); }
+  baixarComprovante(id: number) { return this.api.getBlob(`admin/pagamentos/${id}/comprovante`); }
   confirmarPagamentoExterno(encomendaId: number, tipo: 'SINAL' | 'INTEGRAL', forma: 'PIX' | 'DINHEIRO' | 'DEPOSITO') { return this.api.post<Pagamento, object>(`admin/encomendas/${encomendaId}/pagamentos/confirmacao-externa`, { tipo, forma, origem: 'EXTERNO_MANUAL' }); }
   modelos() { return this.api.get<ModeloIconeDetalhe[]>('admin/modelos'); }
   criarModelo(request: ModeloIconeAdminRequest) { return this.api.post<ModeloIconeDetalhe, ModeloIconeAdminRequest>('admin/modelos', request); }

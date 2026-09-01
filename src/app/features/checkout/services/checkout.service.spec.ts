@@ -51,4 +51,14 @@ describe('CheckoutService', () => {
     expect(request.request.body).toEqual({ tipo: 'INTEGRAL', forma: 'DEPOSITO', origem: 'EXTERNO_MANUAL' });
     request.flush({});
   });
+
+  it('should upload an optional receipt', () => {
+    const file = new File(['%PDF-test'], 'comprovante.pdf', { type: 'application/pdf' });
+    service.anexarComprovante(20, 7, file).subscribe();
+    const request = http.expectOne('http://api.test/api/encomendas/20/pagamentos/7/comprovante');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body instanceof FormData).toBe(true);
+    expect((request.request.body as FormData).get('arquivo')).toBe(file);
+    request.flush({ id: 7, possuiComprovante: true });
+  });
 });

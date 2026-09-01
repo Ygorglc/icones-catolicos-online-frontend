@@ -34,4 +34,15 @@ describe('PedidosClienteService', () => {
     expect(request.request.body).toEqual({ tipo: 'RESTANTE', forma: 'DEPOSITO', origem: 'EXTERNO_MANUAL' });
     request.flush({});
   });
+
+  it('should upload and download a payment receipt', () => {
+    const file = new File(['%PDF-test'], 'comprovante.pdf', { type: 'application/pdf' });
+    service.anexarComprovante(12, 8, file).subscribe();
+    const upload = http.expectOne('http://api.test/api/encomendas/12/pagamentos/8/comprovante');
+    expect(upload.request.body instanceof FormData).toBe(true); upload.flush({ possuiComprovante: true });
+    service.baixarComprovante(12, 8).subscribe();
+    const download = http.expectOne('http://api.test/api/encomendas/12/pagamentos/8/comprovante');
+    expect(download.request.method).toBe('GET'); expect(download.request.responseType).toBe('blob');
+    download.flush(new Blob(['arquivo'], { type: 'application/pdf' }));
+  });
 });

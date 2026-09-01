@@ -10,6 +10,7 @@ export class ApiClientService {
   get<T>(path: string, params?: HttpParams): Observable<T> {
     return this.http.get<T>(this.url(path), { params });
   }
+  getBlob(path: string): Observable<Blob> { return this.http.get(this.url(path), { responseType: 'blob' }); }
   post<TResponse, TBody = unknown>(path: string, body: TBody): Observable<TResponse> {
     return this.http.post<TResponse>(this.url(path), body);
   }

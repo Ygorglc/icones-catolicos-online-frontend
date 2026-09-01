@@ -3,6 +3,6 @@ import { FormaPagamento, TipoEntrega, TipoPagamento } from '../../checkout/model
 
 export interface ItemPedido { id: number; modeloIconeId: number; modeloIconeNome: string; quantidade: number; valorUnitario: number; subtotal: number; personalizacao: PersonalizacaoCarrinho; }
 export interface Pedido { id: number; clienteId: number; clienteNome: string; dataCriacao: string; statusEncomenda: string; statusFinanceiro: string; valorTotal: number; valorSinal: number; tipoEntrega: TipoEntrega; enderecoEntrega: string | null; observacoes: string | null; itens: ItemPedido[]; }
-export interface Pagamento { id: number; encomendaId: number; tipo: TipoPagamento | 'RESTANTE'; forma: FormaPagamento; origem: string; valor: number; dataPagamento: string | null; status: string; referenciaSimulada: string; }
+export interface Pagamento { id: number; encomendaId: number; tipo: TipoPagamento | 'RESTANTE'; forma: FormaPagamento; origem: string; valor: number; dataPagamento: string | null; status: string; referenciaSimulada: string; possuiComprovante: boolean; comprovanteNomeOriginal: string | null; }
 export interface HistoricoPagamentos { encomendaId: number; valorTotal: number; totalPago: number; saldoPendente: number; statusFinanceiro: string; pagamentos: Pagamento[]; }
 export interface CertificadoCliente { numeroPeca: string; dataEmissao: string; nomeArtesao: string; modeloIcone: string; codigoPublico: string; }

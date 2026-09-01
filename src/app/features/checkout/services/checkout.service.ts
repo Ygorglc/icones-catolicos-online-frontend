@@ -15,4 +15,8 @@ export class CheckoutService {
   registrarPagamento(encomendaId: number, tipo: TipoPagamento, forma: FormaPagamento): Observable<PagamentoResponse> {
     return this.api.post<PagamentoResponse, object>(`encomendas/${encomendaId}/pagamentos`, { tipo, forma, origem: 'EXTERNO_MANUAL' });
   }
+  anexarComprovante(encomendaId: number, pagamentoId: number, arquivo: File): Observable<PagamentoResponse> {
+    const formData = new FormData(); formData.append('arquivo', arquivo);
+    return this.api.post<PagamentoResponse, FormData>(`encomendas/${encomendaId}/pagamentos/${pagamentoId}/comprovante`, formData);
+  }
 }

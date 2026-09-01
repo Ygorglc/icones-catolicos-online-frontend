@@ -14,4 +14,11 @@ export class PedidosClienteService {
   pagar(id: number, tipo: TipoPagamento | 'RESTANTE', forma: FormaPagamento) {
     return this.api.post(`encomendas/${id}/pagamentos`, { tipo, forma, origem: 'EXTERNO_MANUAL' });
   }
+  anexarComprovante(encomendaId: number, pagamentoId: number, arquivo: File) {
+    const formData = new FormData(); formData.append('arquivo', arquivo);
+    return this.api.post(`encomendas/${encomendaId}/pagamentos/${pagamentoId}/comprovante`, formData);
+  }
+  baixarComprovante(encomendaId: number, pagamentoId: number) {
+    return this.api.getBlob(`encomendas/${encomendaId}/pagamentos/${pagamentoId}/comprovante`);
+  }
 }
